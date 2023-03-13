@@ -22,60 +22,35 @@ https://github.com/Ekaterishe4ka/infra_sp2.git
 ```
 
 ```
-cd api_yamdb/
-```
-
-Cоздать и активировать виртуальное окружение:
-
-```
-python -m venv venv
-```
-
-```
-source venv/Scripts/activate
-```
-
-Установить зависимости из файла requirements.txt:
-
-```
-python -m pip install --upgrade pip
-```
-
-```
-pip install -r requirements.txt
+cd infra/
 ```
 
 Запустить приложение в контейнерах:
 
-*из директории infra/
 ```
 docker-compose up -d --build
 ```
 
 Выполнить миграции:
 
-*из директории infra/
 ```
 docker-compose exec web python manage.py migrate
 ```
 
 Создать суперпользователя:
 
-*из директории infra/
 ```
 docker-compose exec web python manage.py createsuperuser
 ```
 
 Собрать статику:
 
-*из директории infra/
 ```
 docker-compose exec web python manage.py collectstatic --no-input
 ```
 
 Остановить приложение в контейнерах:
 
-*из директории infra/
 ```
 docker-compose down -v
 ```
@@ -83,12 +58,26 @@ docker-compose down -v
 ## Шаблон наполнения env-файла
 
 ```
-infra/.env
+DB_ENGINE=django.db.backends.postgresql # указываем, что работаем с postgresql
+DB_NAME=postgres # имя базы данных
+POSTGRES_USER=postgres # логин для подключения к базе данных
+POSTGRES_PASSWORD=postgres # пароль для подключения к БД (установите свой)
+DB_HOST=db # название сервиса (контейнера)
+DB_PORT=5432 # порт для подключения к БД
 ```
 
 ## Описание команды для заполнения базы данными
+
+Копируем файл с базами данных из /infra в папку app:
+
 ```
-cd api_yamdb && python manage.py loaddata ../infra/fixtures.json
+docker cp fixtures.json <id контенера>:/app
+```
+
+Запускаем команду для загрузки баз:
+
+```
+docker-compose exec web python manage.py loaddata fixtures.json
 ```
 
 # Автор проекта
